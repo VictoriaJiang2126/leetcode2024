@@ -6,46 +6,47 @@ import java.util.LinkedList;
 
 public class code_207_Course_Schedule {
     public static boolean canFinish(int numCourses, int[][] prerequisites) {
-        int indergree[] = new int[numCourses]; //入度 个数
-        ArrayList<ArrayList<Integer>> outdegree = new ArrayList<>(); //出去的边
-
+        
+        int[] indegree = new int[numCourses];
+        ArrayList<ArrayList<Integer>> outdegree = new ArrayList<>();
         for(int i=0; i<numCourses; i++){
             outdegree.add(new ArrayList<>());
         }
-        
+
         for(int i=0; i<prerequisites.length; i++){
-            int curCourse = prerequisites[i][0];
-            indergree[curCourse] += 1;
-            int nextCourse = prerequisites[i][1];
-            outdegree.get(nextCourse).add(curCourse);
+            int first = prerequisites[i][1];
+            int next = prerequisites[i][0];
+            outdegree.get(first).add(next);
+            indegree[next]++;
         }
 
-        Deque<ArrayList<Integer>> queue = new LinkedList<>();
+        Deque<Integer> queue = new LinkedList<>();
         for(int i=0; i<numCourses; i++){
-            if(indergree[i] == 0){
-                queue.add(outdegree.get(i));
-                indergree[i] --;
+            if(indegree[i] == 0){
+                queue.addLast(i);
             }
         }
+
         while(!queue.isEmpty()){
-            ArrayList<Integer> c = queue.pollFirst();
-            for(int out : c){
-                indergree[out] --;
-            }
-            for(int i=0; i<numCourses; i++){
-                if(indergree[i] == 0){
-                    queue.add(outdegree.get(i));
-                    indergree[i] --;
+            int size = queue.size();
+            for(int i=0; i<size; i++){
+                int cur = queue.pollFirst();
+                indegree[cur] = -1;
+                for(int next : outdegree.get(cur)){
+                    indegree[next] --;
+                    if(indegree[next] == 0){
+                        queue.addLast(next);
+                    }
                 }
-            }
+            }   
         }
+
         for(int i=0; i<numCourses; i++){
-            if(indergree[i] != -1){
+            if(indegree[i] != -1){
                 return false;
             }
         }
         return true;
-
     }
 
     public static void main(String args[]){
