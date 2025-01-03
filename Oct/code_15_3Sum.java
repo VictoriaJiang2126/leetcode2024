@@ -53,4 +53,13 @@ public class code_15_3Sum {
         return res;
         
     }
+
+    // aaa
+    //ababa bac 
+    //aaaa-> 1
+    
+    //abcabca ->3:abc
+
+
+
 }
